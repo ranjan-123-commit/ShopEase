@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import {
   ShoppingBag,
   Search,
-  Heart,
   ShoppingCart,
   UserRound,
   Menu,
