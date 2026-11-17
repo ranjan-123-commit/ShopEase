@@ -13,7 +13,7 @@ function Women() {
       try {
 
         const response = await axios.get(
-         "http://localhost:9001/api/products/category/women"
+         `${API_BASE_URL}/products`
         );
 
         setProducts(response.data);

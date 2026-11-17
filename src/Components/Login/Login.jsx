@@ -21,7 +21,7 @@ function Login() {
     try {
 
       const response = await axios.post(
-        "http://localhost:9001/api/auth/login",
+        `${process.env.REACT_APP_API_URL}/auth/login`,
         formData
       );
         const token = response.data.token;

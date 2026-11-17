@@ -11,7 +11,7 @@ function Details() {
   useEffect(() => {
 
     axios
-      .get(`http://localhost:9001/api/products/${id}`)
+      .get(`${process.env.REACT_APP_API_URL}/products/${id}`)
       .then((response) => {
         setProduct(response.data);
       })
