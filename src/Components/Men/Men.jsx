@@ -14,8 +14,8 @@ function Men() {
     async function fetchMenProducts() {
       try {
         const response = await axios.get(
-          "http://localhost:9001/api/products/category/Men",
-          { signal: controller.signal }
+          `${API_BASE_URL}/products`
+         
         );
 
         setProducts(Array.isArray(response.data) ? response.data : []);

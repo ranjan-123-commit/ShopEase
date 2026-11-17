@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import axios from "axios";
 import { CartContext } from "../Context/CartContext";
 
-const API_BASE_URL = "http://localhost:9001/api";
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 function Checkout() {
   const { cart, cartTotal } = useContext(CartContext);
@@ -32,9 +32,7 @@ function Checkout() {
         return;
       }
 
-      // 1. Create a Razorpay order through Spring Boot.
-      // NOTE: The backend must eventually calculate the amount
-      // from trusted product prices instead of trusting cartTotal.
+      // 1. Create Razorpay order through Spring Boot.
       const response = await axios.post(
         `${API_BASE_URL}/payment/create-order`,
         null,
@@ -65,9 +63,7 @@ function Checkout() {
           try {
             console.log("Razorpay payment response received.");
 
-            // 3. Verify the signature on the backend.
-            // Payment endpoints are temporarily permitAll
-            // during debugging, so no JWT header is sent here.
+            // 3. Verify payment signature on backend.
             const verificationResponse = await axios.post(
               `${API_BASE_URL}/payment/verify`,
               {
@@ -81,17 +77,15 @@ function Checkout() {
             );
 
             if (verificationResponse.data?.verified === true) {
-              alert(
-                "Payment signature verified successfully!"
-              );
+              alert("Payment signature verified successfully!");
 
               console.log(
                 "Verification result:",
                 verificationResponse.data
               );
 
-              // Oracle order creation/status update and cart
-              // clearing are not implemented in this version.
+              // Order creation/status update and cart clearing
+              // are not implemented in this version.
             } else {
               alert(
                 "Payment could not be verified. Please contact support if needed."
@@ -138,6 +132,7 @@ function Checkout() {
       });
 
       razorpay.open();
+
     } catch (error) {
       console.error(
         "Unable to start payment:",
@@ -166,6 +161,7 @@ function Checkout() {
         </p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+
           {/* Order items */}
           <div>
             <h2 className="text-2xl font-semibold mb-5">
@@ -213,6 +209,7 @@ function Checkout() {
 
             <div className="flex justify-between mb-4">
               <span className="text-gray-600">Items</span>
+
               <span>
                 {cart.reduce(
                   (total, product) =>
