@@ -13,7 +13,7 @@ function Electronics() {
       try {
 
         const response = await axios.get(
-          "http://localhost:9001/api/products/category/Electronics"
+          `${API_BASE_URL}/products`
         );
 
         setProducts(response.data);
