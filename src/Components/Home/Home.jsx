@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import {
@@ -11,7 +12,7 @@ import {
 } from "lucide-react";
 import ProductCard from "./ProductCard/ProductCard";
 
-const API_URL = "http://localhost:9001/api/products";
+const API_URL = `${process.env.REACT_APP_API_URL}/products`;
 
 const categories = [
   {
@@ -45,8 +46,7 @@ function Home({ search = "", onAddToCart }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Fetch all products returned by the backend.
-  // There is intentionally NO 12-product limit.
+  // Fetch products from the configured backend.
   useEffect(() => {
     const controller = new AbortController();
 
@@ -55,6 +55,10 @@ function Home({ search = "", onAddToCart }) {
       setError("");
 
       try {
+        if (!process.env.REACT_APP_API_URL) {
+          throw new Error("REACT_APP_API_URL is not configured.");
+        }
+
         const response = search.trim()
           ? await axios.get(`${API_URL}/search`, {
               params: { keyword: search.trim() },
@@ -86,7 +90,7 @@ function Home({ search = "", onAddToCart }) {
     return () => controller.abort();
   }, [search]);
 
-  // Filter products by the selected category.
+  // Filter products by category.
   const filteredProducts = useMemo(() => {
     if (activeCategory === "All") {
       return products;
@@ -101,7 +105,8 @@ function Home({ search = "", onAddToCart }) {
 
   return (
     <main className="bg-[#fcfaf7] text-slate-900">
-      {/* ================= HERO SECTION ================= */}
+
+      {/* HERO SECTION */}
       <section className="relative mx-auto max-w-[1500px] overflow-hidden bg-[#eee1d3]">
         <div className="absolute inset-0">
           <img
@@ -109,7 +114,6 @@ function Home({ search = "", onAddToCart }) {
             alt="ShopEase fashion collection"
             className="h-full w-full object-cover object-center"
           />
-
           <div className="absolute inset-0 bg-gradient-to-r from-[#f7eee4] via-[#f7eee4]/75 to-[#f7eee4]/10" />
         </div>
 
@@ -142,7 +146,7 @@ function Home({ search = "", onAddToCart }) {
         </div>
       </section>
 
-      {/* ================= CATEGORY SECTION ================= */}
+      {/* CATEGORY SECTION */}
       <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
@@ -160,9 +164,9 @@ function Home({ search = "", onAddToCart }) {
             type="button"
             onClick={() => {
               setActiveCategory("All");
-              document
-                .getElementById("products")
-                ?.scrollIntoView({ behavior: "smooth" });
+              document.getElementById("products")?.scrollIntoView({
+                behavior: "smooth",
+              });
             }}
             className="hidden items-center gap-2 text-sm font-semibold text-[#704323] sm:flex"
           >
@@ -177,9 +181,9 @@ function Home({ search = "", onAddToCart }) {
               type="button"
               onClick={() => {
                 setActiveCategory(category.name);
-                document
-                  .getElementById("products")
-                  ?.scrollIntoView({ behavior: "smooth" });
+                document.getElementById("products")?.scrollIntoView({
+                  behavior: "smooth",
+                });
               }}
               className="group relative flex min-h-48 overflow-hidden rounded-2xl border border-[#eadfd3] bg-[#f0e3d6] text-left"
             >
@@ -210,7 +214,7 @@ function Home({ search = "", onAddToCart }) {
         </div>
       </section>
 
-      {/* ================= PRODUCTS SECTION ================= */}
+      {/* PRODUCTS SECTION */}
       <section
         id="products"
         className="mx-auto max-w-7xl scroll-mt-24 px-5 pb-12 sm:px-8"
@@ -308,7 +312,7 @@ function Home({ search = "", onAddToCart }) {
           </div>
         )}
 
-        {/* All filtered products: NO slice(0, 12) */}
+        {/* All filtered products */}
         {!loading && !error && filteredProducts.length > 0 && (
           <>
             <p className="mb-5 text-sm text-slate-500">
@@ -328,7 +332,7 @@ function Home({ search = "", onAddToCart }) {
         )}
       </section>
 
-      {/* ================= STORE BENEFITS ================= */}
+      {/* STORE BENEFITS */}
       <section className="mx-auto max-w-7xl px-5 pb-5 sm:px-8">
         <div className="grid grid-cols-2 gap-5 rounded-3xl bg-[#f5ede4] px-5 py-7 sm:grid-cols-4 sm:px-8">
           {[
@@ -371,7 +375,7 @@ function Home({ search = "", onAddToCart }) {
         </div>
       </section>
 
-      {/* ================= NEWSLETTER ================= */}
+      {/* NEWSLETTER */}
       <section className="mx-auto max-w-7xl px-5 py-8 sm:px-8">
         <div className="relative overflow-hidden rounded-3xl bg-[#eee0d0] px-6 py-10 sm:px-12">
           <div className="absolute -right-10 -top-20 h-64 w-64 rounded-full border-[35px] border-white/30" />
